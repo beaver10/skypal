@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkyPal — 날씨가 귀여워졌다</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#000;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text',sans-serif;-webkit-font-smoothing:antialiased;}
+
+    /* NAV */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:48px;background:rgba(0,0,0,0.85);border-bottom:0.5px solid rgba(255,255,255,0.1);position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);}
+    .logo{font-size:18px;font-weight:500;color:#f5f5f7;letter-spacing:-0.3px;}
+    .nav-links{display:flex;gap:24px;}
+    .nav-link{font-size:12px;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;}
+    .nav-dl{font-size:12px;color:#2997ff;cursor:pointer;text-decoration:none;}
+
+    /* HERO */
+    .hero{text-align:center;padding:120px 40px 80px;max-width:980px;margin:0 auto;}
+    .hero-eyebrow{font-size:17px;font-weight:400;color:#2997ff;margin-bottom:12px;letter-spacing:0.2px;}
+    .hero h1{font-size:80px;font-weight:200;line-height:1.05;letter-spacing:-4px;color:#f5f5f7;margin-bottom:24px;}
+    .hero h1 em{font-style:italic;font-weight:200;}
+    .hero-sub{font-size:21px;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.5;margin-bottom:44px;letter-spacing:-0.3px;}
+    .cta-row{display:flex;align-items:center;justify-content:center;gap:28px;}
+    .cta-primary{font-size:19px;color:#2997ff;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;}
+    .cta-secondary{font-size:19px;color:rgba(255,255,255,0.4);cursor:pointer;}
+
+    /* HERO CHARACTER */
+    .hero-visual{margin:60px auto 0;max-width:500px;display:flex;justify-content:center;position:relative;}
+    .glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(41,151,255,0.1) 0%,transparent 70%);pointer-events:none;}
+
+    /* FEATURES */
+    .section{padding:80px 40px;text-align:center;border-top:0.5px solid rgba(255,255,255,0.08);}
+    .eyebrow{font-size:13px;font-weight:500;color:#2997ff;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;}
+    .section-title{font-size:48px;font-weight:200;letter-spacing:-2px;color:#f5f5f7;margin-bottom:8px;}
+    .section-sub{font-size:19px;font-weight:300;color:rgba(255,255,255,0.45);margin-bottom:56px;letter-spacing:-0.3px;}
+
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:980px;margin:0 auto;}
+    .card{background:#161617;padding:40px 32px;text-align:left;}
+    .card:first-child{border-radius:14px 0 0 14px;}
+    .card:last-child{border-radius:0 14px 14px 0;}
+    .card-icon{margin-bottom:24px;}
+    .card-title{font-size:21px;font-weight:300;color:#f5f5f7;margin-bottom:10px;letter-spacing:-0.5px;}
+    .card-desc{font-size:15px;color:rgba(255,255,255,0.4);line-height:1.65;font-weight:300;}
+
+    /* POPUP SHOWCASE */
+    .popup-showcase{margin:0 auto;max-width:260px;}
+    .popup-card{background:#1c1c1e;border-radius:20px;overflow:hidden;border:0.5px solid rgba(255,255,255,0.1);}
+    .popup-top{background:linear-gradient(180deg,rgba(41,151,255,0.07) 0%,transparent 100%);padding:28px 20px 18px;}
+    .popup-char-center{display:flex;justify-content:center;margin-bottom:12px;}
+    .p-city{text-align:center;font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:2px;font-weight:300;}
+    .p-temp{text-align:center;font-size:52px;font-weight:200;color:#f5f5f7;letter-spacing:-3px;line-height:1;}
+    .p-cond{text-align:center;font-size:13px;color:rgba(255,255,255,0.35);margin-top:6px;font-weight:300;}
+    .p-div{height:0.5px;background:rgba(255,255,255,0.08);}
+    .p-stats{display:grid;grid-template-columns:1fr 0.5px 1fr 0.5px 1fr;padding:16px 0;}
+    .p-stat{text-align:center;}
+    .p-sep{background:rgba(255,255,255,0.08);}
+    .p-label{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px;}
+    .p-val{font-size:15px;font-weight:400;color:#f5f5f7;}
+    .p-quit{text-align:center;padding:12px;font-size:12px;color:rgba(255,255,255,0.2);font-weight:300;}
+
+    /* WEATHER BADGES */
+    .weather-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:40px;}
+    .weather-badge{background:#161617;border:0.5px solid rgba(255,255,255,0.1);border-radius:980px;padding:8px 18px;font-size:13px;color:rgba(255,255,255,0.5);font-weight:300;}
+
+    /* DOWNLOAD */
+    .dl-section{text-align:center;padding:100px 40px;border-top:0.5px solid rgba(255,255,255,0.08);}
+    .dl-section h2{font-size:48px;font-weight:200;letter-spacing:-2px;margin-bottom:12px;}
+    .dl-section p{font-size:19px;font-weight:300;color:rgba(255,255,255,0.45);margin-bottom:40px;letter-spacing:-0.2px;}
+    .dl-btn{display:inline-flex;align-items:center;gap:8px;background:#2997ff;color:#fff;border:none;padding:18px 36px;border-radius:980px;font-size:17px;font-weight:400;cursor:pointer;letter-spacing:-0.2px;font-family:inherit;text-decoration:none;}
+    .dl-btn:hover{background:#1a7fe0;}
+    .dl-meta{font-size:13px;color:rgba(255,255,255,0.2);margin-top:14px;font-weight:300;}
+
+    /* FOOTER */
+    footer{text-align:center;padding:28px 40px;border-top:0.5px solid rgba(255,255,255,0.06);}
+    footer p{font-size:12px;color:rgba(255,255,255,0.2);font-weight:300;}
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">SkyPal</div>
+    <div class="nav-links">
+      <a class="nav-link" href="#features">기능</a>
+      <a class="nav-link" href="#download">다운로드</a>
+    </div>
+    <a class="nav-dl" href="#download">무료 다운로드 ›</a>
+  </nav>
+
+  <div class="hero">
+    <p class="hero-eyebrow">SkyPal</p>
+    <h1>날씨가<br><em>귀여워졌다.</em></h1>
+    <p class="hero-sub">메뉴바에서 바로 확인하는 실시간 날씨.<br>귀여운 캐릭터와 함께, 무료로.</p>
+    <div class="cta-row">
+      <a class="cta-primary" href="#download">무료 다운로드 ›</a>
+      <span class="cta-secondary">macOS 13 이상</span>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="glow"></div>
+    <svg width="240" height="220" viewBox="0 0 120 100" fill="none">
+      <g transform="translate(60,48)">
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(45)"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(90)"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(135)"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(180)"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(225)"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(270)"/>
+        <line x1="0" y1="-44" x2="0" y2="-32" stroke="#FCD34D" stroke-width="4.5" stroke-linecap="round" transform="rotate(315)"/>
+      </g>
+      <circle cx="60" cy="48" r="26" fill="#FCD34D"/>
+      <circle cx="50" cy="43" r="5" fill="white"/>
+      <circle cx="51.5" cy="43" r="3.2" fill="#1E293B"/>
+      <circle cx="53.5" cy="41" r="1.3" fill="white"/>
+      <circle cx="70" cy="43" r="5" fill="white"/>
+      <circle cx="71.5" cy="43" r="3.2" fill="#1E293B"/>
+      <circle cx="73.5" cy="41" r="1.3" fill="white"/>
+      <ellipse cx="44" cy="52" rx="5.5" ry="3.2" fill="#F97316" opacity="0.35"/>
+      <ellipse cx="76" cy="52" rx="5.5" ry="3.2" fill="#F97316" opacity="0.35"/>
+      <path d="M51 58 Q60 68 69 58" stroke="#1E293B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="section" id="features">
+    <p class="eyebrow">기능</p>
+    <h2 class="section-title">작지만, 강력하게.</h2>
+    <p class="section-sub">메뉴바 한 켠에서 모든 걸 해결해요.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2997ff" stroke-width="1.2" stroke-linecap="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+        </div>
+        <p class="card-title">실시간 위치 날씨</p>
+        <p class="card-desc">GPS 기반으로 현재 위치의 날씨를 자동으로 불러와요. 어디서든 정확하게.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#bf5af2" stroke-width="1.2" stroke-linecap="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </div>
+        <p class="card-title">낮/밤 자동 전환</p>
+        <p class="card-desc">일출·일몰 시간을 기반으로 캐릭터가 자동으로 바뀌어요. 밤엔 달님이 반겨줘요.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="1.2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <p class="card-title">30분 자동 새로고침</p>
+        <p class="card-desc">30분마다 자동으로 날씨를 갱신해요. 항상 최신 정보를 확인할 수 있어요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="eyebrow">디자인</p>
+    <h2 class="section-title">귀엽고, 깔끔하게.</h2>
+    <p class="section-sub">날씨별로 다른 캐릭터가 반겨줘요.</p>
+    <div class="popup-showcase">
+      <div class="popup-card">
+        <div class="popup-top">
+          <div class="popup-char-center">
+            <svg width="100" height="90" viewBox="0 0 120 100" fill="none">
+              <g transform="translate(60,48)">
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(45)"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(90)"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(135)"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(180)"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(225)"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(270)"/>
+                <line x1="0" y1="-40" x2="0" y2="-29" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" transform="rotate(315)"/>
+              </g>
+              <circle cx="60" cy="48" r="22" fill="#FCD34D"/>
+              <circle cx="51" cy="43" r="4.5" fill="white"/>
+              <circle cx="52.5" cy="43" r="3" fill="#1E293B"/>
+              <circle cx="54" cy="41.5" r="1.2" fill="white"/>
+              <circle cx="69" cy="43" r="4.5" fill="white"/>
+              <circle cx="70.5" cy="43" r="3" fill="#1E293B"/>
+              <circle cx="72" cy="41.5" r="1.2" fill="white"/>
+              <ellipse cx="46" cy="51" rx="5" ry="3" fill="#F97316" opacity="0.35"/>
+              <ellipse cx="74" cy="51" rx="5" ry="3" fill="#F97316" opacity="0.35"/>
+              <path d="M52 56 Q60 65 68 56" stroke="#1E293B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="p-city">Banpobondong</p>
+          <p class="p-temp">15°</p>
+          <p class="p-cond">맑음</p>
+        </div>
+        <div class="p-div"></div>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-label">습도</div><div class="p-val">31%</div></div>
+          <div class="p-sep"></div>
+          <div class="p-stat"><div class="p-label">바람</div><div class="p-val">0m/s</div></div>
+          <div class="p-sep"></div>
+          <div class="p-stat"><div class="p-label">체감</div><div class="p-val">13°</div></div>
+        </div>
+        <div class="p-div"></div>
+        <div class="p-quit">종료</div>
+      </div>
+    </div>
+    <div class="weather-row">
+      <span class="weather-badge">☀️ 맑음</span>
+      <span class="weather-badge">⛅ 구름</span>
+      <span class="weather-badge">🌧️ 비</span>
+      <span class="weather-badge">❄️ 눈</span>
+      <span class="weather-badge">🌙 밤</span>
+      <span class="weather-badge">⛈️ 천둥</span>
+    </div>
+  </div>
+
+  <div class="dl-section" id="download">
+    <h2>지금 바로 시작하세요.</h2>
+    <p>무료로 다운로드하고,<br>메뉴바를 귀엽게 꾸며보세요.</p>
+    <a class="dl-btn" href="YOUR_DOWNLOAD_LINK_HERE">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      macOS용 무료 다운로드
+    </a>
+    <div class="dl-meta">macOS 13 이상 · 무료 · 오픈소스</div>
+  </div>
+
+  <footer>
+    <p>Copyright © 2026 SkyPal. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
